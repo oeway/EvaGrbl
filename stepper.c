@@ -27,7 +27,7 @@
 #include "config.h"
 #include "settings.h"
 #include "planner.h"
-
+#include "sync_control.h"
 // Some useful constants
 #define TICKS_PER_MICROSECOND (F_CPU/1000000)
 #define CYCLES_PER_ACCELERATION_TICK ((TICKS_PER_MICROSECOND*1000000)/ACCELERATION_TICKS_PER_SECOND)
@@ -214,7 +214,9 @@ ISR(TIMER1_COMPA_vect)
       if (out_bits & (1<<Z_DIRECTION_BIT)) { sys.position[Z_AXIS]--; }
       else { sys.position[Z_AXIS]++; }
     }
-    
+	if(sys.position[sync_axis] % sync_step ==0){
+		bit_toggle(SYNC_CONTROL_PORT,bit(SYNC_CONTROL_BIT));
+	}
     st.step_events_completed++; // Iterate step events
 
     // While in block steps, check for de/ac-celeration events and execute them accordingly.

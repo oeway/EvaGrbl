@@ -31,6 +31,7 @@
 #include "stepper.h"
 #include "spindle_control.h"
 #include "coolant_control.h"
+#include "sync_control.h"
 #include "motion_control.h"
 #include "gcode.h"
 #include "protocol.h"
@@ -67,6 +68,7 @@ int main(void)
       protocol_init(); // Clear incoming line data and execute startup lines
       spindle_init();
       coolant_init();
+	  sync_init();
       limits_init();
       st_reset(); // Clear stepper subsystem variables.
 

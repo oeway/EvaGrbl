@@ -65,13 +65,17 @@
 #define SPINDLE_ENABLE_PORT  PORTB
 #define SPINDLE_ENABLE_BIT   4  // Uno Digital Pin 12
 
-#define SPINDLE_DIRECTION_DDR   DDRB
-#define SPINDLE_DIRECTION_PORT  PORTB
-#define SPINDLE_DIRECTION_BIT   5  // Uno Digital Pin 13 (NOTE: D13 can't be pulled-high input due to LED.)
+#define SPINDLE_DIRECTION_DDR   DDRC
+#define SPINDLE_DIRECTION_PORT  PORTC
+#define SPINDLE_DIRECTION_BIT   5 // Uno Analog Pin 5
 
 #define COOLANT_FLOOD_DDR   DDRC
 #define COOLANT_FLOOD_PORT  PORTC
 #define COOLANT_FLOOD_BIT   3  // Uno Analog Pin 3
+
+#define SYNC_CONTROL_DDR      DDRB
+#define SYNC_CONTROL_PORT     PORTB
+#define SYNC_CONTROL_BIT      5  // Uno Digital Pin 13 (NOTE: D13 can't be pulled-high input due to LED.)
 
 // NOTE: Uno analog pins 4 and 5 are reserved for an i2c interface, and may be installed at
 // a later date if flash and memory space allows.
@@ -80,7 +84,8 @@
   #define COOLANT_MIST_DDR   DDRC
   #define COOLANT_MIST_PORT  PORTC
   #define COOLANT_MIST_BIT   4 // Uno Analog Pin 4
-#endif  
+#endif 
+
 
 // NOTE: All pinouts pins must be on the same port
 #define PINOUT_DDR       DDRC
@@ -93,6 +98,8 @@
 #define PINOUT_INT_vect  PCINT1_vect
 #define PINOUT_PCMSK     PCMSK1 // Pin change interrupt register
 #define PINOUT_MASK ((1<<PIN_RESET)|(1<<PIN_FEED_HOLD)|(1<<PIN_CYCLE_START))
+
+
 
 // Define runtime command special characters. These characters are 'picked-off' directly from the
 // serial read data stream and are not passed to the grbl line execution parser. Select characters

@@ -30,6 +30,7 @@
 #include "motion_control.h"
 #include "spindle_control.h"
 #include "coolant_control.h"
+#include "sync_control.h"
 #include "errno.h"
 #include "protocol.h"
 #include "report.h"
@@ -184,6 +185,7 @@ uint8_t gc_execute_line(char *line)
           #endif
           case 8: gc.coolant_mode = COOLANT_FLOOD_ENABLE; break;
           case 9: gc.coolant_mode = COOLANT_DISABLE; break;
+		  case 108: non_modal_action = NON_MODAL_SET_SYNC; break;
           default: FAIL(STATUS_UNSUPPORTED_STATEMENT);
         }            
         break;
@@ -207,6 +209,7 @@ uint8_t gc_execute_line(char *line)
      for different commands. Each will be converted to their proper value upon execution. */
   float p = 0, r = 0;
   uint8_t l = 0;
+  uint8_t q = 0;
   char_counter = 0;
   while(next_statement(&letter, &value, line, &char_counter)) {
     switch(letter) {
@@ -221,7 +224,8 @@ uint8_t gc_execute_line(char *line)
         break;
       case 'I': case 'J': case 'K': offset[letter-'I'] = to_millimeters(value); break;
       case 'L': l = trunc(value); break;
-      case 'P': p = value; break;                    
+      case 'P': p = value; break; 
+	  case 'Q': q = value; break;
       case 'R': r = to_millimeters(value); break;
       case 'S': 
         if (value < 0) { FAIL(STATUS_INVALID_STATEMENT); } // Cannot be negative
@@ -362,6 +366,13 @@ uint8_t gc_execute_line(char *line)
       break;
     case NON_MODAL_RESET_COORDINATE_OFFSET: 
       clear_vector(gc.coord_offset); // Disable G92 offsets by zeroing offset vector.
+      break;
+	case NON_MODAL_SET_SYNC: 
+	  sync_step = to_millimeters(p) * settings.steps_per_mm[X_AXIS];
+	  if(q >= X_AXIS && q <= Z_AXIS)
+		sync_axis = q;
+	  else
+		sync_axis = X_AXIS;
       break;
   }
 
