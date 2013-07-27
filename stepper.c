@@ -79,6 +79,9 @@ static bool processing_flag;                  // indicates if blocks are being p
 static volatile bool stop_requested;          // when set to true stepper interrupt will go idle on next entry
 static volatile uint8_t stop_status;          // yields the reason for a stop request
 
+static volatile bool aux1_output_flag = false;  
+uint32_t aux1_Step = 100;  //aux1 is used for position report,parameter can be modified with M108P_Q_ command. --modified by oeway
+uint8_t aux1_axis = X_AXIS; //aux1 is used for position report,parameter can be modified with M108P_Q_ command. --modified by oeway
 
 // prototypes for static functions (non-accesible from other files)
 static bool acceleration_tick();
@@ -286,7 +289,7 @@ ISR(TIMER1_COMPA_vect) {
           stepper_position[X_AXIS] -= 1;
         } else {
           stepper_position[X_AXIS] += 1;
-        }        
+        }  
       }
       counter_y += current_block->steps_y;
       if (counter_y > 0) {
@@ -311,7 +314,16 @@ ISR(TIMER1_COMPA_vect) {
         }        
       }
       //////
-      
+	if(stepper_position[aux1_axis] % aux1_Step ==0){
+		if(aux1_output_flag){
+		aux1_output_flag = false;
+		control_aux1_assist(false);
+		}
+		else{
+		aux1_output_flag = true;
+		control_aux1_assist(true);
+		}
+	}
       step_events_completed++;  // increment step count
       
       // apply stepper invert mask

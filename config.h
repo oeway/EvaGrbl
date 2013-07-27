@@ -27,7 +27,7 @@
 // (must not contain capital letters)
 #define LASAURGRBL_VERSION "13.04"
 // build for new driveboard hardware
-#define DRIVEBOARD
+//#define DRIVEBOARD
 // build for 0.9 deg steppers
 // #define NANOTEC_STEPPER_09
 #define BAUD_RATE 57600

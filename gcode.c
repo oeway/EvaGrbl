@@ -18,8 +18,16 @@
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-*/
 
+*/
+//Added M108P_Q_ command to support position report, first parameter after P 
+//is defined as report margin and second parameter after Q is defined as 
+//axis selected for position report.
+//For example: command M108P1.5Q2 will told the device to toggle the aux1 pin
+//every 1.5mm step on Z axis.
+//This is originally used for fire the ultrasonic pulse in some sepcific 
+//location grid. 
+//--modified by oeway
 #include <string.h>
 #include <math.h>
 #include "errno.h"
@@ -48,6 +56,7 @@
   #define NEXT_ACTION_AUX2_ASSIST_ENABLE 10
   #define NEXT_ACTION_AUX2_ASSIST_DISABLE 11
 #endif
+#define NEXT_ACTION_SET_AUX1_STEP 12
 
 #define OFFSET_G54 0
 #define OFFSET_G55 1
@@ -80,6 +89,8 @@ static volatile bool position_update_requested;  // make sure to update to stepp
 static int next_statement(char *letter, double *double_ptr, char *line, uint8_t *char_counter);
 static int read_double(char *line, uint8_t *char_counter, double *double_ptr);
 
+extern uint32_t aux1_Step;
+extern uint8_t aux1_axis;
 
 void gcode_init() {
   memset(&gc, 0, sizeof(gc));
@@ -295,6 +306,7 @@ uint8_t gcode_execute_line(char *line) {
   uint8_t next_action = NEXT_ACTION_NONE;
   double target[3];
   double p = 0.0;
+  uint8_t q = 0;
   int cs = 0;
   int l = 0;
   bool got_actual_line_command = false;  // as opposed to just e.g. G1 F1200
@@ -330,6 +342,7 @@ uint8_t gcode_execute_line(char *line) {
             case 84: next_action = NEXT_ACTION_AUX2_ASSIST_ENABLE;break;
             case 85: next_action = NEXT_ACTION_AUX2_ASSIST_DISABLE;break;
           #endif
+		  case 108: next_action = NEXT_ACTION_SET_AUX1_STEP;break;
           default: FAIL(STATUS_UNSUPPORTED_STATEMENT);
         }            
         break;
@@ -344,6 +357,7 @@ uint8_t gcode_execute_line(char *line) {
   memcpy(target, gc.position, sizeof(target)); // i.e. target = gc.position
 
   //// Pass 2: Parameters
+  q = 0;
   while(next_statement(&letter, &value, line, &char_counter)) {
     if (gc.inches_mode) {
       unit_converted_value = value * MM_PER_INCH;
@@ -367,19 +381,23 @@ uint8_t gcode_execute_line(char *line) {
         }
         got_actual_line_command = true;
         break;        
-      case 'P':  // dwelling seconds or CS selector
+      case 'P':  // dwelling seconds or CS selector and first parameter for M108
         if (next_action == NEXT_ACTION_SET_COORDINATE_OFFSET) {
           cs = trunc(value);
         } else {
           p = value;
         }
         break;
+	  case 'Q':  //second parameter for M108
+	    q = value;
+		break;
       case 'S':
         gc.nominal_laser_intensity = value;
         break; 
       case 'L':  // G10 qualifier 
       l = trunc(value);
         break;
+	  
     }
   }
   
@@ -482,6 +500,18 @@ uint8_t gcode_execute_line(char *line) {
         planner_control_aux2_assist_disable();
         break;
     #endif
+	case NEXT_ACTION_SET_AUX1_STEP:
+		if (gc.inches_mode) {
+		  unit_converted_value = p * MM_PER_INCH;
+		} else {
+		  unit_converted_value = p;
+		}
+		aux1_Step = unit_converted_value * CONFIG_X_STEPS_PER_MM;
+		if(q >= X_AXIS && q <= Z_AXIS)
+			aux1_axis = q;
+		else
+			aux1_axis = X_AXIS;
+		break;
   }
   
   // As far as the parser is concerned, the position is now == target. In reality the
