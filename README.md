@@ -67,5 +67,16 @@ stop resume on: \02 control char
 pause on: door, resume on door close
 
 
+Custom command
+--------------
+- use M108 P100 Q0 to set the step and axis for toggling aux1.
+
+The first parameter after P is defined as report margin and second parameter after Q is defined as 
+axis selected for position report.For example: command M108P1.5Q2 will told the device to toggle the aux1 pin every 1.5mm step on Z axis.
+
+This is originally used for fire the ultrasonic pulse in some sepcific location grid. 
+
+--modified by oeway
+
 
 
