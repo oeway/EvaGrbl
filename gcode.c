@@ -368,7 +368,7 @@ uint8_t gc_execute_line(char *line)
       clear_vector(gc.coord_offset); // Disable G92 offsets by zeroing offset vector.
       break;
 	case NON_MODAL_SET_SYNC: 
-	  sync_step = to_millimeters(p) * settings.steps_per_mm[X_AXIS];
+	  sync_step =0.5* to_millimeters(p) * settings.steps_per_mm[X_AXIS];
 	  if(q >= X_AXIS && q <= Z_AXIS)
 		sync_axis = q;
 	  else
