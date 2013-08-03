@@ -70,10 +70,10 @@
   #define DEFAULT_AUTO_START 1 // true
   #define DEFAULT_INVERT_ST_ENABLE 0 // false
   #define DEFAULT_HARD_LIMIT_ENABLE 0  // false
-  #define DEFAULT_HOMING_ENABLE 0  // false
+  #define DEFAULT_HOMING_ENABLE 1  // false
   #define DEFAULT_HOMING_DIR_MASK 0 // move positive dir
-  #define DEFAULT_HOMING_RAPID_FEEDRATE 250.0 // mm/min
-  #define DEFAULT_HOMING_FEEDRATE 25.0 // mm/min
+  #define DEFAULT_HOMING_RAPID_FEEDRATE 800.0 // mm/min
+  #define DEFAULT_HOMING_FEEDRATE 250.0 // mm/min
   #define DEFAULT_HOMING_DEBOUNCE_DELAY 100 // msec (0-65k)
   #define DEFAULT_HOMING_PULLOFF 1.0 // mm
   #define DEFAULT_STEPPER_IDLE_LOCK_TIME 25 // msec (0-255)
