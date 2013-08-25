@@ -24,6 +24,8 @@
 
 extern uint32_t sync_step;  
 extern uint8_t sync_axis;
+extern uint32_t current_sync_step;
+extern uint32_t half_sync_step;
 
 void sync_init();
 //void sync_set();

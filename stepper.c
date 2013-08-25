@@ -214,8 +214,12 @@ ISR(TIMER1_COMPA_vect)
       if (out_bits & (1<<Z_DIRECTION_BIT)) { sys.position[Z_AXIS]--; }
       else { sys.position[Z_AXIS]++; }
     }
-	if(sys.position[sync_axis] % sync_step ==0){
-		bit_toggle(SYNC_CONTROL_PORT,bit(SYNC_CONTROL_BIT));
+	current_sync_step = sys.position[sync_axis] % sync_step;
+	if(current_sync_step == 0){
+		bit_true(SYNC_CONTROL_PORT,bit(SYNC_CONTROL_BIT));
+	}
+	else if(current_sync_step == half_sync_step ){
+		bit_false(SYNC_CONTROL_PORT,bit(SYNC_CONTROL_BIT));
 	}
     st.step_events_completed++; // Iterate step events
 

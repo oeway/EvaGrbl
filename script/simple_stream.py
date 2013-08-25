@@ -12,26 +12,25 @@ segments directly into the planner. So there may not be a response
 from grbl for the duration of the arc.
 """
 
-import serial
+from serial_manager import SerialManager
 import time
 
 # Open grbl serial port
-s = serial.Serial('/dev/tty.usbmodem1811',9600)
-
+SerialManager.connect("COM4", 9600)
+s = SerialManager
 # Open g-code file
-f = open('grbl.gcode','r');
+f = open('electric_turtle.nc','r');
 
 # Wake up grbl
 s.write("\r\n\r\n")
-time.sleep(2)   # Wait for grbl to initialize 
-s.flushInput()  # Flush startup text in serial input
+
 
 # Stream g-code to grbl
 for line in f:
     l = line.strip() # Strip all EOL characters for consistency
     print 'Sending: ' + l,
     s.write(l + '\n') # Send g-code block to grbl
-    grbl_out = s.readline() # Wait for grbl response with carriage return
+    grbl_out = s.read_to('\n') # Wait for grbl response with carriage return
     print ' : ' + grbl_out.strip()
 
 # Wait here until grbl is finished to close serial port and file.
