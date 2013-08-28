@@ -19,14 +19,14 @@
 
 #ifndef sync_control_h
 #define sync_control_h 
-
+#include "nuts_bolts.h"
 #include <avr/io.h>
 
 extern uint32_t sync_step;  
 extern uint8_t sync_axis;
 extern uint32_t current_sync_step;
 extern uint32_t half_sync_step;
-
+extern bool sync_on;
 void sync_init();
 //void sync_set();
 //void sync_reset();
