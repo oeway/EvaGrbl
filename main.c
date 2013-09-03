@@ -101,7 +101,9 @@ int main(void)
         protocol_execute_startup(); 
       }
     }
-    
+    if(sys.state == STATE_IDLE)
+		bit_toggle(SYNC_CONTROL_PORT,bit(SYNC_CONTROL_BIT));
+	
     protocol_execute_runtime();
     protocol_process(); // ... process the serial protocol
     

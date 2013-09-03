@@ -412,11 +412,6 @@ uint8_t gc_execute_line(char *line)
         target[i] = gc.position[i]; // No axis word in block. Keep same axis position.
       }
     }
-	
-	if(gc.motion_mode == MOTION_MODE_SEEK)
-		sync_on = false; //close sync when in seek mode
-	else
-		sync_on = true;
 	bit_true(SYNC_CONTROL_PORT,bit(SYNC_CONTROL_BIT));
 	
     switch (gc.motion_mode) {
