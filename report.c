@@ -140,6 +140,7 @@ void report_grbl_help() {
                       "~ (cycle start)\r\n"
                       "! (feed hold)\r\n"
                       "? (current status)\r\n"
+					  "$@ (load default settings)\r\n"
                       "ctrl-x (reset Grbl)\r\n"));
 }
 

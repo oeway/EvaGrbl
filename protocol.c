@@ -31,6 +31,7 @@
 #include "stepper.h"
 #include "report.h"
 #include "motion_control.h"
+#include "settings.h"
 
 static char line[LINE_BUFFER_SIZE]; // Line to be executed. Zero-terminated.
 static uint8_t char_counter; // Last character counter in line variable.
@@ -232,6 +233,10 @@ uint8_t protocol_execute_line(char *line)
           } else { return(STATUS_IDLE_ERROR); }
         } else { return(STATUS_SETTING_DISABLED); }
         break;
+      case '@' : // Perform homing cycle
+		settings_reset(true);
+		report_grbl_settings();
+        break;		
 //    case 'J' : break;  // Jogging methods
       // TODO: Here jogging can be placed for execution as a seperate subprogram. It does not need to be 
       // susceptible to other runtime commands except for e-stop. The jogging function is intended to

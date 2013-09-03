@@ -80,6 +80,7 @@ extern settings_t settings;
 
 // Initialize the configuration subsystem (load settings from EEPROM)
 void settings_init();
+void settings_reset(bool reset_all);
 
 // A helper method to set new settings from command line
 uint8_t settings_store_global_setting(int parameter, float value);
