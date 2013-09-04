@@ -137,10 +137,10 @@ void report_grbl_help() {
                       "$C (check gcode mode)\r\n"
                       "$X (kill alarm lock)\r\n"
                       "$H (run homing cycle)\r\n"
+					  "$R (load default settings)\r\n"
                       "~ (cycle start)\r\n"
                       "! (feed hold)\r\n"
                       "? (current status)\r\n"
-					  "$@ (load default settings)\r\n"
                       "ctrl-x (reset Grbl)\r\n"));
 }
 

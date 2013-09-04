@@ -233,7 +233,7 @@ uint8_t protocol_execute_line(char *line)
           } else { return(STATUS_IDLE_ERROR); }
         } else { return(STATUS_SETTING_DISABLED); }
         break;
-      case '@' : // Perform homing cycle
+      case 'R' : // load default settings
 		settings_reset(true);
 		report_grbl_settings();
         break;		
